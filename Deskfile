@@ -1,0 +1,66 @@
+# vi: ft=sh
+
+# Run docker-compose with the appropriate arguments, also shorter to write
+dcompose() {
+  echo "docker-compose -f ops/docker-compose.dev.yml -p slsweb $*"
+  docker-compose -f ops/docker-compose.dev.yml -p slsweb $*
+}
+
+# Does all the setup for local development
+dev-setup() {
+  dcompose build && echo
+  dcompose pull mongo rabbit && echo
+  dcompose run --no-deps --rm client npm install
+  dcompose run --no-deps --rm api govendor sync
+  if ! [[ -f tmp/san-lite-solver ]]; then
+    echo -n 'Downloading san-lite-solver executable... '
+    curl -sL 'https://sites.google.com/site/afonsosales/tools/linux64/san-lite-solver?attredirects=0' > tmp/san-lite-solver
+    chmod +x tmp/san-lite-solver
+    echo 'DONE'
+  fi
+}
+
+# Start dev dependencies
+deps() {
+  dcompose up mongo rabbit
+}
+
+# Start client and server in dev mode
+start-apps() {
+  dcompose up api client worker
+}
+
+# Start all services
+up() {
+  dcompose up
+}
+
+stop() {
+  dcompose stop
+}
+
+# Stop all services
+down() {
+  dcompose down
+}
+
+# Fire up a shell for hacking on the project
+hack() {
+  dcompose run --rm -p 8080:8080 -p 3000:3000 api bash
+}
+
+# Remove any traces of the app from your computer
+pristine() {
+  echo -n 'Are you sure? [y/N] '
+  read answer
+  if [ "${answer}" != "y" ]; then
+    echo 'Aborting'
+    return 1
+  fi
+
+  down
+  make clobber
+  docker volume rm slsweb_mongodata
+  docker volume rm slsweb_rabbitdata
+  dev-setup
+}

@@ -1,0 +1,60 @@
+version: '2'
+services:
+  api:
+    extends:
+      file: 'docker-compose.common.yml'
+      service: slsweb_dev
+    ports:
+      - '8080:8080'
+    links:
+      - mongo
+      - rabbit
+    environment:
+      MONGO_URL: 'mongo'
+      RABBIT_URL: 'amqp://guest:guest@rabbit:5672/'
+    command: 'make serve.api'
+
+  client:
+    extends:
+      file: 'docker-compose.common.yml'
+      service: slsweb_dev
+    environment:
+      PORT: '3000'
+    ports:
+      - '3000:3000'
+    working_dir: '/go/src/github.com/fgrehm/sls-web/'
+    command: 'make serve.client'
+
+  worker:
+    extends:
+      file: 'docker-compose.common.yml'
+      service: slsweb_dev
+    links:
+      - mongo
+      - rabbit
+    environment:
+      MONGO_URL: 'mongo'
+      RABBIT_URL: 'amqp://guest:guest@rabbit:5672/'
+    command: 'make work'
+
+  mongo:
+    extends:
+      file: 'docker-compose.common.yml'
+      service: mongo
+    volumes:
+      - 'slswebmongodata:/data/db'
+    ports:
+      - '27017:27017'
+
+  rabbit:
+    extends:
+      file: 'docker-compose.common.yml'
+      service: rabbitmgmt
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - 'slswebrabbitdata:/var/lib/rabbitmq'
+volumes:
+  slswebrabbitdata:
+  slswebmongodata:

@@ -1,0 +1,53 @@
+version: '2'
+services:
+  mongo:
+    extends:
+      file: 'docker-compose.common.yml'
+      service: mongo
+    environment:
+      - "constraint:node==db-*"
+    volumes:
+      - 'slswebmongodata:/data/db'
+    ports:
+      - '27017:27017'
+
+  rabbit:
+    extends:
+      file: 'docker-compose.common.yml'
+      service: rabbitmgmt
+    environment:
+      - "constraint:node==queue-*"
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - 'slswebrabbitdata:/var/lib/rabbitmq'
+
+  web:
+    extends:
+      file: 'docker-compose.common.yml'
+      service: web
+    ports:
+      - '8080:8080'
+    environment:
+      - "constraint:node==web-*"
+      - 'MONGO_URL=mongo'
+      - 'RABBIT_URL=amqp://guest:guest@rabbit:5672/'
+
+  worker:
+    extends:
+      file: 'docker-compose.common.yml'
+      service: worker
+    environment:
+      - "constraint:node==solver-*"
+      - 'MONGO_URL=mongo'
+      - 'RABBIT_URL=amqp://guest:guest@rabbit:5672/'
+    mem_limit: 1536m
+
+volumes:
+  slswebrabbitdata:
+  slswebmongodata:
+
+networks:
+  default:
+    driver: overlay

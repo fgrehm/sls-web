@@ -1,0 +1,17 @@
+version: '2'
+services:
+  web:
+    image: 'fgrehm/sls-web:web'
+  worker:
+    image: 'fgrehm/sls-web:worker'
+  slsweb_dev:
+    build:
+      context: '../'
+      dockerfile: 'ops/Dockerfile.dev'
+    image: 'fgrehm/sls-web:dev'
+    volumes:
+      - '../:/go/src/github.com/fgrehm/sls-web'
+  mongo:
+    image: 'mongo:3.2.10'
+  rabbitmgmt:
+    image: 'rabbitmq:3.6.5-management'

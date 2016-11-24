@@ -1,0 +1,51 @@
+@import 'variables';
+
+@import vital/icons
+@import vital/grid
+
+@import vital/base
+@import vital/buttons
+// @import vital/footer
+@import vital/forms
+@import vital/header
+@import vital/heroes
+@import vital/loaders
+@import vital/notice
+// @import vital/pagination
+@import vital/tables
+@import vital/tabs
+// @import vital/syntax
+@import vital/helpers
+
+@import 'font-awesome/scss/font-awesome';
+
+body
+  background: $gray-lighter
+  margin: 0
+
+.header
+  height: 3.8em
+  h2
+    margin: 0
+    padding: 0.5em
+    color: $gray-light
+  nav a
+    padding: 1.1em
+    color: $gray-lighter
+    &:hover
+      background: $gray
+      color: $white
+  &, a, h2, li
+    background: $black
+.contents
+  margin: 1em
+  padding: 1em
+
+.notice
+  color: $gray
+  padding: 5px
+.notice.error
+  background: lighten($red, 30%)
+  color: $gray-lightest
+  padding: 5px
+  font-size: 1.2em
