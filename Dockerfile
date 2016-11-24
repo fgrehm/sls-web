@@ -12,4 +12,4 @@ RUN curl -sL 'https://github.com/fgrehm/sls-web/releases/download/v0.0.1/sls-web
 
 USER sls-web
 WORKDIR /app
-ENTRYPOINT /app/sls-web
+ENTRYPOINT ["/app/sls-web"]
