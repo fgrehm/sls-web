@@ -1,7 +1,7 @@
 .PHONY: build build.watch serve.api serve.client work release release.build release.package
 
 SHELL = /bin/bash
-VERSION = '0.0.1'
+VERSION = 0.0.1
 
 default: build
 
