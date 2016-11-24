@@ -1,0 +1,87 @@
+//=== FAS - First Available Server (N=10) ===
+//===  using only constant rates  ===
+
+identifiers
+  // Acquisition rate
+  lambda = 3.000000;
+  // Release rate
+  mu = 1.000000;
+
+events
+
+  loc t1 (lambda);
+  syn t2 (lambda);
+  syn t3 (lambda);
+  syn t4 (lambda);
+  syn t5 (lambda);
+  syn t6 (lambda);
+  syn t7 (lambda);
+  syn t8 (lambda);
+  syn t9 (lambda);
+  syn t10 (lambda);
+  loc r1 (mu);
+  loc r2 (mu);
+  loc r3 (mu);
+  loc r4 (mu);
+  loc r5 (mu);
+  loc r6 (mu);
+  loc r7 (mu);
+  loc r8 (mu);
+  loc r9 (mu);
+  loc r10 (mu);
+
+reachability = 1; // all states are rechable
+
+network FAS10c (continuous)
+
+  aut Server1 stt idle to (busy) t1
+              stt busy to (idle) r1
+                       to (busy) t2 t3 t4 t5 t6 t7 t8 t9 t10
+
+  aut Server2 stt idle to (busy) t2
+              stt busy to (idle) r2
+                       to (busy) t3 t4 t5 t6 t7 t8 t9 t10
+
+  aut Server3 stt idle to (busy) t3
+              stt busy to (idle) r3
+                       to (busy) t4 t5 t6 t7 t8 t9 t10
+
+  aut Server4 stt idle to (busy) t4
+              stt busy to (idle) r4
+                       to (busy) t5 t6 t7 t8 t9 t10
+
+  aut Server5 stt idle to (busy) t5
+              stt busy to (idle) r5
+                       to (busy) t6 t7 t8 t9 t10
+
+  aut Server6 stt idle to (busy) t6
+              stt busy to (idle) r6
+                       to (busy) t7 t8 t9 t10
+
+  aut Server7 stt idle to (busy) t7
+              stt busy to (idle) r7
+                       to (busy) t8 t9 t10
+
+  aut Server8 stt idle to (busy) t8
+              stt busy to (idle) r8
+                       to (busy) t9 t10
+
+  aut Server9 stt idle to (busy) t9
+              stt busy to (idle) r9
+                       to (busy) t10
+
+  aut Server10 stt idle to (busy) t10
+              stt busy to (idle) r10
+
+results
+
+used1 = (st Server1 == busy);
+used2 = (st Server2 == busy);
+used3 = (st Server3 == busy);
+used4 = (st Server4 == busy);
+used5 = (st Server5 == busy);
+used6 = (st Server6 == busy);
+used7 = (st Server7 == busy);
+used8 = (st Server8 == busy);
+used9 = (st Server9 == busy);
+used10 = (st Server10 == busy);

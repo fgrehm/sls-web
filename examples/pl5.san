@@ -1,0 +1,165 @@
+// SAN model equivalent to a production line of 5 stations with buffer capacities:
+//    B2=5, B3=6, B4=7, B5=8, 
+// and service rates:
+//    MU_1=1.000000, MU_2=2.000000, MU_3=3.000000, MU_4=4.000000, MU_5=5.000000
+
+identifiers
+
+  // Service rates
+  mu1 = 1.000000;
+  mu2 = 2.000000;
+  mu3 = 3.000000;
+  mu4 = 4.000000;
+  mu5 = 5.000000;
+
+  // Blocking functions (allow that station "j" goes to the "blocking" state with a rate "mu_i", indicating that station "i" is blocked)
+  f2_3_b = (st M2 != st_0_0) * mu2;
+  f3_4_b = (st M3 != st_0_0) * mu3;
+  f4_5_b = (st M4 != st_0_0) * mu4;
+
+  // Functional probabilities to allow back transitions in station 2
+  backM3 = ((st M3 == st_6_2));
+  backM3_4 = ((st M3 == st_6_2) && (st M4 == st_7_2));
+  // Functional probabilities to allow back transitions in station 3
+  backM4 = ((st M4 == st_7_2));
+
+  // Functional probabilities to avoid back transitions in station 2
+  nbackM3 = !(backM3);
+  nbackM3_4 = !(backM3_4);
+  // Functional probabilities to avoid back transitions in station 3
+  nbackM4 = !(backM4);
+
+events
+
+  loc r1_2			(mu1);
+  syn r2_3			(mu2);
+  loc r2_3_b		(f2_3_b);
+  syn r2_3_u		(mu2);
+  syn r3_4			(mu3);
+  loc r3_4_b		(f3_4_b);
+  syn r3_4_u		(mu3);
+  syn r4_5			(mu4);
+  loc r4_5_b		(f4_5_b);
+  syn r4_5_u		(mu4);
+  loc r5_x			(mu5);
+  syn r5_x_u		(mu5);
+
+reachability = !((st M2 == st_0_0) && (st M3 == st_6_2)) && !((st M3 == st_0_0) && (st M4 == st_7_2)) && !((st M4 == st_0_0) && (st M5 == st_8_2));
+
+network B2_5_B3_6_B4_7_B5_8 (continuous)
+
+  aut M2
+    stt st_0_0 to (st_0_1) r1_2 
+               to (st_0_0) r4_5_u r5_x_u
+    stt st_0_1 to (st_1_1) r1_2 
+               to (st_0_1) r4_5_u(nbackM3) r5_x_u(nbackM3_4)
+               to (st_0_0) r2_3 r3_4_u r4_5_u(backM3) r5_x_u(backM3_4)
+    stt st_1_1 to (st_2_1) r1_2 
+               to (st_1_1) r4_5_u(nbackM3) r5_x_u(nbackM3_4)
+               to (st_0_1) r2_3 r3_4_u r4_5_u(backM3) r5_x_u(backM3_4)
+    stt st_2_1 to (st_3_1) r1_2 
+               to (st_2_1) r4_5_u(nbackM3) r5_x_u(nbackM3_4)
+               to (st_1_1) r2_3 r3_4_u r4_5_u(backM3) r5_x_u(backM3_4)
+    stt st_3_1 to (st_4_1) r1_2 
+               to (st_3_1) r4_5_u(nbackM3) r5_x_u(nbackM3_4)
+               to (st_2_1) r2_3 r3_4_u r4_5_u(backM3) r5_x_u(backM3_4)
+    stt st_4_1 to (st_5_1) r1_2 
+               to (st_4_1) r4_5_u(nbackM3) r5_x_u(nbackM3_4)
+               to (st_3_1) r2_3 r3_4_u r4_5_u(backM3) r5_x_u(backM3_4)
+    stt st_5_1 to (st_5_2) r1_2
+               to (st_5_1) r4_5_u(nbackM3) r5_x_u(nbackM3_4)
+               to (st_4_1) r2_3 r3_4_u r4_5_u(backM3) r5_x_u(backM3_4)
+    stt st_5_2 to (st_5_1) r2_3_u r3_4_u r4_5_u(backM3) r5_x_u(backM3_4)
+               to (st_5_2) r4_5_u(nbackM3) r5_x_u(nbackM3_4)
+
+  aut M3
+    stt st_0_0 to (st_0_1) r2_3 r2_3_u 
+               to (st_0_0) r5_x_u
+    stt st_0_1 to (st_1_1) r2_3 r2_3_u 
+               to (st_0_1) r5_x_u(nbackM4)
+               to (st_0_0) r3_4 r4_5_u r5_x_u(backM4)
+    stt st_1_1 to (st_2_1) r2_3 r2_3_u 
+               to (st_1_1) r5_x_u(nbackM4)
+               to (st_0_1) r3_4 r4_5_u r5_x_u(backM4)
+    stt st_2_1 to (st_3_1) r2_3 r2_3_u 
+               to (st_2_1) r5_x_u(nbackM4)
+               to (st_1_1) r3_4 r4_5_u r5_x_u(backM4)
+    stt st_3_1 to (st_4_1) r2_3 r2_3_u 
+               to (st_3_1) r5_x_u(nbackM4)
+               to (st_2_1) r3_4 r4_5_u r5_x_u(backM4)
+    stt st_4_1 to (st_5_1) r2_3 r2_3_u 
+               to (st_4_1) r5_x_u(nbackM4)
+               to (st_3_1) r3_4 r4_5_u r5_x_u(backM4)
+    stt st_5_1 to (st_6_1) r2_3 r2_3_u 
+               to (st_5_1) r5_x_u(nbackM4)
+               to (st_4_1) r3_4 r4_5_u r5_x_u(backM4)
+    stt st_6_1 to (st_6_2) r2_3_b
+               to (st_6_1) r5_x_u(nbackM4)
+               to (st_5_1) r3_4 r4_5_u r5_x_u(backM4)
+    stt st_6_2 to (st_6_1) r3_4_u r4_5_u r5_x_u(backM4)
+               to (st_6_2) r5_x_u(nbackM4)
+
+  aut M4
+    stt st_0_0 to (st_0_1) r3_4 r3_4_u 
+    stt st_0_1 to (st_1_1) r3_4 r3_4_u 
+               to (st_0_0) r4_5 r5_x_u
+    stt st_1_1 to (st_2_1) r3_4 r3_4_u 
+               to (st_0_1) r4_5 r5_x_u
+    stt st_2_1 to (st_3_1) r3_4 r3_4_u 
+               to (st_1_1) r4_5 r5_x_u
+    stt st_3_1 to (st_4_1) r3_4 r3_4_u 
+               to (st_2_1) r4_5 r5_x_u
+    stt st_4_1 to (st_5_1) r3_4 r3_4_u 
+               to (st_3_1) r4_5 r5_x_u
+    stt st_5_1 to (st_6_1) r3_4 r3_4_u 
+               to (st_4_1) r4_5 r5_x_u
+    stt st_6_1 to (st_7_1) r3_4 r3_4_u 
+               to (st_5_1) r4_5 r5_x_u
+    stt st_7_1 to (st_7_2) r3_4_b
+               to (st_6_1) r4_5 r5_x_u
+    stt st_7_2 to (st_7_1) r4_5_u r5_x_u
+
+  aut M5
+    stt st_0_0 to (st_0_1) r4_5 r4_5_u 
+    stt st_0_1 to (st_1_1) r4_5 r4_5_u 
+               to (st_0_0) r5_x
+    stt st_1_1 to (st_2_1) r4_5 r4_5_u 
+               to (st_0_1) r5_x
+    stt st_2_1 to (st_3_1) r4_5 r4_5_u 
+               to (st_1_1) r5_x
+    stt st_3_1 to (st_4_1) r4_5 r4_5_u 
+               to (st_2_1) r5_x
+    stt st_4_1 to (st_5_1) r4_5 r4_5_u 
+               to (st_3_1) r5_x
+    stt st_5_1 to (st_6_1) r4_5 r4_5_u 
+               to (st_4_1) r5_x
+    stt st_6_1 to (st_7_1) r4_5 r4_5_u 
+               to (st_5_1) r5_x
+    stt st_7_1 to (st_8_1) r4_5 r4_5_u 
+               to (st_6_1) r5_x
+    stt st_8_1 to (st_8_2) r4_5_b
+               to (st_7_1) r5_x
+    stt st_8_2 to (st_8_1) r5_x_u
+
+results
+
+Utilizatio_M2 = (st M2 != st_0_0);
+Throughput_M2 = ((st M2 != st_0_0) && (st M3 != st_6_2)) * mu2;
+BufferOccu_M2 = 0 + ((st M2 == st_1_1) * 1) + ((st M2 == st_2_1) * 2) + ((st M2 == st_3_1) * 3) + ((st M2 == st_4_1) * 4) + ((st M2 == st_5_1) * 5) + ((st M2 == st_5_2) * 5);
+Population_M2 = 0 + ((st M2 == st_0_1) * 1) + ((st M2 == st_1_1) * 2) + ((st M2 == st_2_1) * 3) + ((st M2 == st_3_1) * 4) + ((st M2 == st_4_1) * 5) + ((st M2 == st_5_1) * 6) + ((st M2 == st_5_2) * 6);
+
+Utilizatio_M3 = (st M3 != st_0_0);
+Throughput_M3 = ((st M3 != st_0_0) && (st M4 != st_7_2)) * mu3;
+BufferOccu_M3 = 0 + ((st M3 == st_1_1) * 1) + ((st M3 == st_2_1) * 2) + ((st M3 == st_3_1) * 3) + ((st M3 == st_4_1) * 4) + ((st M3 == st_5_1) * 5) + ((st M3 == st_6_1) * 6) + ((st M3 == st_6_2) * 6);
+Population_M3 = 0 + ((st M3 == st_0_1) * 1) + ((st M3 == st_1_1) * 2) + ((st M3 == st_2_1) * 3) + ((st M3 == st_3_1) * 4) + ((st M3 == st_4_1) * 5) + ((st M3 == st_5_1) * 6) + ((st M3 == st_6_1) * 7) + ((st M3 == st_6_2) * 7);
+
+Utilizatio_M4 = (st M4 != st_0_0);
+Throughput_M4 = ((st M4 != st_0_0) && (st M5 != st_8_2)) * mu4;
+BufferOccu_M4 = 0 + ((st M4 == st_1_1) * 1) + ((st M4 == st_2_1) * 2) + ((st M4 == st_3_1) * 3) + ((st M4 == st_4_1) * 4) + ((st M4 == st_5_1) * 5) + ((st M4 == st_6_1) * 6) + ((st M4 == st_7_1) * 7) + ((st M4 == st_7_2) * 7);
+Population_M4 = 0 + ((st M4 == st_0_1) * 1) + ((st M4 == st_1_1) * 2) + ((st M4 == st_2_1) * 3) + ((st M4 == st_3_1) * 4) + ((st M4 == st_4_1) * 5) + ((st M4 == st_5_1) * 6) + ((st M4 == st_6_1) * 7) + ((st M4 == st_7_1) * 8) + ((st M4 == st_7_2) * 8);
+
+Utilizatio_M5 = (st M5 != st_0_0);
+Throughput_M5 = ((st M5 != st_0_0)) * mu5;
+BufferOccu_M5 = 0 + ((st M5 == st_1_1) * 1) + ((st M5 == st_2_1) * 2) + ((st M5 == st_3_1) * 3) + ((st M5 == st_4_1) * 4) + ((st M5 == st_5_1) * 5) + ((st M5 == st_6_1) * 6) + ((st M5 == st_7_1) * 7) + ((st M5 == st_8_1) * 8) + ((st M5 == st_8_2) * 8);
+Population_M5 = 0 + ((st M5 == st_0_1) * 1) + ((st M5 == st_1_1) * 2) + ((st M5 == st_2_1) * 3) + ((st M5 == st_3_1) * 4) + ((st M5 == st_4_1) * 5) + ((st M5 == st_5_1) * 6) + ((st M5 == st_6_1) * 7) + ((st M5 == st_7_1) * 8) + ((st M5 == st_8_1) * 9) + ((st M5 == st_8_2) * 9);
+

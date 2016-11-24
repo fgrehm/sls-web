@@ -1,0 +1,51 @@
+identifiers
+
+  r_proc    = 6;
+  r_more    = 5;
+  r_no_more = 1;
+  r_req     = 6;
+  r_resp    = 5;
+
+  F1 = (st Client == Working) * 1;
+
+events
+
+  loc l_proc    (r_proc);
+  loc l_more    (r_more);
+  loc l_no_more (r_no_more);
+  loc l_wait    (F1);
+  syn s_req     (r_req);
+  syn s_resp    (r_resp);
+
+
+partial reachability = ((st Client == Idle) && (st Server == Idle));
+
+
+network ClientServer (continuous)
+
+  aut Client
+    stt Idle         to (Transmitting) s_req
+    stt Transmitting to (Receiving)    s_resp
+    stt Receiving    to (Working)      l_proc
+    stt Working      to (Transmitting) l_more
+                     to (Idle)         l_no_more
+
+  aut Server
+    stt Idle         to (Receiving)    s_req
+    stt Receiving    to (Transmitting) s_resp
+    stt Transmitting to (Idle)         l_wait
+
+
+results
+
+  Client_requesting      = (st Client == Transmitting);
+  Client_receiving       = (st Client == Receiving);
+  Client_processing      = (st Client == Working);
+
+  Client_trans_Serv_rcv  = ((st Client == Transmitting)
+                            && (st Server == Receiving));
+  Client_recv_Serv_trans = ((st Client == Receiving)
+                            && (st Server == Transmitting));
+
+  Client_idle            = (st Client == Idle);
+  Server_idle            = (st Server == Idle);
