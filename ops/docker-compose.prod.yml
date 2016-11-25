@@ -1,3 +1,5 @@
+# WARNING: This is not suitable for "real production" since security is
+#          currently not a concern
 version: '2'
 services:
   mongo:
@@ -5,7 +7,7 @@ services:
       file: 'docker-compose.common.yml'
       service: mongo
     environment:
-      - "constraint:node==db-*"
+      - "constraint:node==slsweb-db-*"
     volumes:
       - 'slswebmongodata:/data/db'
     ports:
@@ -16,7 +18,7 @@ services:
       file: 'docker-compose.common.yml'
       service: rabbitmgmt
     environment:
-      - "constraint:node==queue-*"
+      - "constraint:node==slsweb-queue-*"
     ports:
       - '5672:5672'
       - '15672:15672'
@@ -28,9 +30,9 @@ services:
       file: 'docker-compose.common.yml'
       service: web
     ports:
-      - '8080:8080'
+      - '80:8080'
     environment:
-      - "constraint:node==web-*"
+      - "constraint:node==slsweb-web-*"
       - 'MONGO_URL=mongo'
       - 'RABBIT_URL=amqp://guest:guest@rabbit:5672/'
 
@@ -39,10 +41,10 @@ services:
       file: 'docker-compose.common.yml'
       service: worker
     environment:
-      - "constraint:node==solver-*"
+      - "constraint:node==slsweb-solver-*"
       - 'MONGO_URL=mongo'
       - 'RABBIT_URL=amqp://guest:guest@rabbit:5672/'
-    mem_limit: 1536m
+    # mem_limit: 1536m
 
 volumes:
   slswebrabbitdata:

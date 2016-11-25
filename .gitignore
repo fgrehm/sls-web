@@ -9,6 +9,7 @@ _test
 tmp
 vendor/*/
 release
+.keys/*
 
 # Architecture specific extensions/prefixes
 *.[568vq]

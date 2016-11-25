@@ -11,6 +11,7 @@ tmp
 src/client/node_modules
 vendor/*/
 release
+.keys/*
 
 # Architecture specific extensions/prefixes
 *.[568vq]
