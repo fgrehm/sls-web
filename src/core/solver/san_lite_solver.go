@@ -111,7 +111,7 @@ func (r *slsRunner) run(workDir, modelPath string, maxIterations uint, tolerance
 
 func (r *slsRunner) parseResultsFromOutput(output *bytes.Buffer) (*slsSolutionResult, error) {
 	solution := &slsSolutionResult{results: IntegrationResults{}, found: true}
-	var integrationLine = regexp.MustCompile(`^Integration of function ([a-zA-Z0-9_-]+) = ([0-9e\.\-]+)`)
+	var integrationLine = regexp.MustCompile(`^Integration of function ([a-zA-Z0-9_-]+) = ([0-9e\.\-\+]+)`)
 	var stationarySolutionLine = regexp.MustCompile(`^Stationary solution (NOT )?found in ([a-zA-Z0-9_-]+) steps`)
 	for {
 		line, err := output.ReadString('\n')
