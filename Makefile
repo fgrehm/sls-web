@@ -1,7 +1,7 @@
 .PHONY: build build.watch serve.api serve.client work release release.build release.package
 
 SHELL = /bin/bash
-VERSION = 0.0.1
+VERSION = 0.0.2
 
 default: build
 
@@ -32,6 +32,7 @@ release.build:
 
 release.package:
 	rm -f sls-web-linux-*.tgz
+	rm -f sls-web-osx-*.tgz
 	cd release && tar cvzf sls-web-linux-v$(VERSION).tgz --transform 's,^linux,sls-web,' linux
 	cd release && tar cvzf sls-web-osx-v$(VERSION).tgz --transform 's,^osx,sls-web,' osx
 

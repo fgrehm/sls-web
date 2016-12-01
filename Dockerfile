@@ -6,7 +6,7 @@ RUN mkdir -p /app \
     && apt-get install -y --no-install-recommends graphviz curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -sL 'https://github.com/fgrehm/sls-web/releases/download/v0.0.1/sls-web-linux-v0.0.1.tgz' \
+RUN curl -sL 'https://github.com/fgrehm/sls-web/releases/download/v0.0.2/sls-web-linux-v0.0.2.tgz' \
     | tar xvz --strip-components 1 -C /app \
     && adduser sls-web
 
