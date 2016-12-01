@@ -43,7 +43,7 @@ func (s *service) graph(m *sanmodel.Model) (string, error) {
 	g.SetName(m.Network.Name)
 	g.SetDir(true)
 
-	for i := len(m.Network.Automata) - 1; i >= 0; i-- {
+	for i := 0; i < len(m.Network.Automata); i++ {
 		aut := m.Network.Automata[i]
 		g.AddSubGraph(m.Network.Name, "cluster_"+aut.Name, map[string]string{
 			"label": aut.Name,

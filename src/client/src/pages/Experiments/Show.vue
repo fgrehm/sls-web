@@ -16,7 +16,17 @@ div
         strong.to  {{ experiment.identifier.to }}
         |  in increments of
         strong.to  {{ experiment.identifier.increment }}
-      chart(:options="chartOptions")
+      template(v-if="experimentCompleted")
+        chart(:options="chartOptions")
+      template(v-else)
+        .center
+          |  Processed
+          strong  {{solutionsFinished}}
+          |  of
+          strong  {{totalSolutions}}
+          |  solutions
+        .progress-bar
+          .progress(:style="{ width: (solutionsFinished/totalSolutions*100) + '%'}")
       table
         thead
           tr
@@ -24,7 +34,7 @@ div
             th(v-for="(exp, label) in integrationFunctions",:title="exp")
               | {{ label }}
         tbody
-          tr(v-for="solution in experiment.solutions",:title="formatSolutionTooltip(solution)",:class="{ found: solution.found, 'not-found': (solution.found == false)}")
+          tr(v-for="solution in experiment.solutions",:title="formatSolutionTooltip(solution)",:key="solution.id",:class="{ found: solution.found, 'not-found': (solution.found == false)}")
             template(v-if="solution.finishedAt")
               td
                 strong {{ solution.identifierValue }}
@@ -33,16 +43,21 @@ div
             template(v-else)
               td
                 | {{ solution.identifierValue }}
-              td(:colspan="integrationFunctionsLength")
-                .notice
-                  .load.small
-                  em  Processing...
+              td.notice(:colspan="integrationFunctionsLength")
+                .load.small
+                em  Processing...
 
     .clear
 </template>
 
 <script>
-import { every as _every, keys as _keys, map as _map, each as _each } from 'lodash'
+import {
+  every as _every,
+  keys as _keys,
+  map as _map,
+  each as _each,
+  filter as _filter
+} from 'lodash'
 import { mapState, mapActions } from 'vuex'
 import EditableModelHero from 'components/EditableModelHero'
 import Chart from 'components/Chart'
@@ -74,7 +89,9 @@ export default {
       experimentLoaded: ({ experiment }) => experiment.loaded,
       experiment: ({ experiment }) => experiment.data,
       integrationFunctions: ({ experiment }) => experiment.data.integrationFunctions,
-      integrationFunctionsLength: ({ experiment }) => _keys(experiment.data.integrationFunctions).length
+      integrationFunctionsLength: ({ experiment }) => _keys(experiment.data.integrationFunctions).length,
+      totalSolutions: ({ experiment }) => experiment.data.solutions.length,
+      solutionsFinished: ({ experiment }) => _filter(experiment.data.solutions, (s) => s.finishedAt !== null).length
     }),
     experimentCompleted () {
       if (!this.experimentLoaded) return false
@@ -188,4 +205,12 @@ td, th
   background: lighten($green, 25%)
 .not-found
   background: lighten($red, 25%)
+.progress-bar
+  width: 100%
+  height: 30px
+  position: relative
+  border: solid 2px $gray-light
+  .progress
+    height: 26px
+    background: darken($green, 5%)
 </style>

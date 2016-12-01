@@ -33,6 +33,11 @@ export default {
                 .then(({ data }) => cb(data))
                 .catch(errorCb)
   },
+  parseModel (source, cb, errorCb) {
+    return axios.post(`${API_HOST}/parse`, source, { headers: { 'Content-Type': 'text/plain' } })
+                .then(({ data }) => cb(data))
+                .catch(errorCb)
+  },
   loadExperiment (modelID, experimentID, cb, errorCb) {
     return axios.get(`${API_HOST}/models/${modelID}/experiments/${experimentID}`)
                 .then(({ data }) => cb(data))

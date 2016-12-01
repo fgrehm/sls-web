@@ -23,7 +23,7 @@ func registerCompilerEndpoints(e *echo.Echo, cs compiler.Service) {
 
 		res, err := cs.Parse(src)
 		if err != nil {
-			return err
+			return serverError(c, "Error parsing model", err)
 		}
 
 		return c.JSON(http.StatusOK, res)

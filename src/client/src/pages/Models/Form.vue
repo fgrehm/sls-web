@@ -30,9 +30,12 @@ div
             i.fa.fa-file-image-o
             |  Render
         div
-          pre(v-show="error")
-            | {{ error && error.message }}
-            | {{ error && error.response && error.response.data && error.response.data.error }}
+          template(v-if="error")
+            pre(v-if="errorResponseData")
+              | {{ errorResponseData.message || error.message }}
+              | {{ errorResponseData.error }}
+            pre(v-else)
+              | {{ error && error.message }}
           p.center(v-show="rendering")
             span.load.small
             em  Rendering...
@@ -64,7 +67,10 @@ export default {
       source: ({ selectedModel }) => selectedModel.data.source,
       rendering: ({ selectedModel }) => selectedModel.rendering,
       rendered: ({ selectedModel }) => selectedModel.rendered
-    })
+    }),
+    errorResponseData () {
+      return this.error.response && this.error.response.data
+    }
   },
   methods: {
     ...mapActions([

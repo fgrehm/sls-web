@@ -84,9 +84,17 @@ const actions = {
   initializeNewModel ({ commit }) {
     commit(LOADED, { ...emptyModel })
   },
+  parseModel ({ commit, dispatch, state }, cb) {
+    // HACK: Should have mutations specific to parsing insted of using the render ones
+    commit(RENDERING)
+    api.parseModel(state.data.source,
+      () => dispatch('renderModelGraph'),
+      (error) => commit(RENDER_ERROR, error)
+    )
+  },
   updateModelSource ({ commit, dispatch }, newSource) {
     commit(SOURCE_UPDATED, newSource)
-    dispatch('renderModelGraph')
+    dispatch('parseModel')
   },
   saveModel ({ commit, state }, params) {
     commit(SAVING)
