@@ -1,7 +1,7 @@
 .PHONY: build build.watch serve.api serve.client work release release.build release.package
 
 SHELL = /bin/bash
-VERSION = 0.0.2
+VERSION = 0.1.0
 
 default: build
 
@@ -51,3 +51,6 @@ serve.client:
 
 work:
 	reflex -s -r 'sls-web$$' -- sh -c './tmp/sls-web work'
+
+clobber:
+	rm -rf tmp/*

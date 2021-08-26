@@ -1,19 +1,21 @@
 version: '2'
 services:
   web:
-    image: 'fgrehm/sls-web:v0.0.2'
+    image: 'fgrehm/sls-web:v0.1.0'
     command: serve
   worker:
-    image: 'fgrehm/sls-web:v0.0.2'
+    image: 'fgrehm/sls-web:v0.1.0'
     command: work
-  slsweb_dev:
+  dev:
     build:
       context: '../'
       dockerfile: 'ops/Dockerfile.dev'
     image: 'fgrehm/sls-web:dev'
     volumes:
-      - '../:/go/src/github.com/fgrehm/sls-web'
+      - '../:/workspace'
+      - 'gocache:/root/.cache/go-build'
+      - 'gomodcache:/go/pkg/mod'
   mongo:
-    image: 'mongo:3.2.10'
+    image: 'mongo:4.4.8'
   rabbitmgmt:
-    image: 'rabbitmq:3.6.5-management'
+    image: 'rabbitmq:3.8.8-management'

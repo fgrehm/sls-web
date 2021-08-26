@@ -3,7 +3,7 @@ services:
   api:
     extends:
       file: 'docker-compose.common.yml'
-      service: slsweb_dev
+      service: dev
     ports:
       - '8080:8080'
     links:
@@ -17,18 +17,18 @@ services:
   client:
     extends:
       file: 'docker-compose.common.yml'
-      service: slsweb_dev
+      service: dev
     environment:
       PORT: '3000'
     ports:
       - '3000:3000'
-    working_dir: '/go/src/github.com/fgrehm/sls-web/'
+    working_dir: '/workspace'
     command: 'make serve.client'
 
   worker:
     extends:
       file: 'docker-compose.common.yml'
-      service: slsweb_dev
+      service: dev
     links:
       - mongo
       - rabbit
@@ -58,3 +58,5 @@ services:
 volumes:
   slswebrabbitdata:
   slswebmongodata:
+  gocache:
+  gomodcache:

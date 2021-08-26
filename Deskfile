@@ -10,8 +10,8 @@ dcompose() {
 dev-setup() {
   dcompose build && echo
   dcompose pull mongo rabbit && echo
-  dcompose run --no-deps --rm client npm install
-  dcompose run --no-deps --rm api govendor sync
+  dcompose run --no-deps --rm client sh -c "cd src/client && yarn"
+  dcompose run --no-deps --rm api go mod tidy
   if ! [[ -f tmp/san-lite-solver ]]; then
     echo -n 'Downloading san-lite-solver executable... '
     curl -sL 'https://sites.google.com/site/afonsosales/tools/linux64/san-lite-solver?attredirects=0' > tmp/san-lite-solver
@@ -60,7 +60,9 @@ pristine() {
 
   down
   make clobber
-  docker volume rm slsweb_mongodata
-  docker volume rm slsweb_rabbitdata
+  docker volume rm slsweb_gocache
+  docker volume rm slsweb_gomodcache
+  docker volume rm slsweb_slswebmongodata
+  docker volume rm slsweb_slswebrabbitdata
   dev-setup
 }
