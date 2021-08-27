@@ -1,0 +1,4 @@
+# heroku container:push web --recursive
+# heroku container:release web
+FROM fgrehm/sls-web:v0.1.0
+CMD ["start", "--demo"]

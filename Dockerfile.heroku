@@ -1,2 +1,0 @@
-FROM fgrehm/sls-web:v0.1.0
-CMD ["start"]
